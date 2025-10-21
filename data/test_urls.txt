@@ -1,0 +1,5 @@
+# Test URLs for sitecheck
+# These are public sites used for testing
+
+https://example.com
+https://httpbin.org/status/200
