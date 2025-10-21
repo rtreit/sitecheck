@@ -121,8 +121,43 @@ sitecheck/
 │   ├── urls.txt.example # Example URLs file
 │   └── urls.txt         # Your URLs (gitignored)
 ├── pyproject.toml       # Project configuration
+├── demo.sh              # Demo script
+├── EXAMPLE_OUTPUT.md    # Example report output
 └── README.md
 ```
+
+## Example Output
+
+See [EXAMPLE_OUTPUT.md](EXAMPLE_OUTPUT.md) for an example of what the security report looks like.
+
+## Testing
+
+The project includes basic tests:
+
+```bash
+# Run basic import and structure tests
+uv run python test_basic.py
+
+# Run functional tests (requires network access)
+uv run python test_functional.py
+```
+
+## Security Notes
+
+- All dependencies are checked for known vulnerabilities
+- The tool uses secure HTTPS connections
+- No sensitive data (URLs, results, API keys) is sent to third parties except:
+  - Anthropic API for AI analysis of page content
+  - The target URLs being checked (via Playwright browser)
+- Results are stored locally in the `data/` directory
+- The `data/urls.txt` file is gitignored to prevent accidental commits
+
+## Limitations
+
+- Requires internet access to check external sites
+- AI analysis requires an Anthropic API key (paid service)
+- Browser automation may not work with sites requiring complex authentication
+- Rate limiting may apply for large numbers of URLs
 
 ## Requirements
 
