@@ -204,7 +204,15 @@ Provide your response in JSON format with the following structure:
         print(f"Checking {len(urls)} sites...")
         
         async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=True)
+            # Try to use playwright's chromium, fall back to system chromium if needed
+            try:
+                browser = await p.chromium.launch(headless=True)
+            except Exception:
+                # Try system chromium as fallback
+                browser = await p.chromium.launch(
+                    headless=True,
+                    executable_path="/usr/bin/chromium-browser"
+                )
             
             try:
                 # Process sites concurrently (but limit concurrency to avoid overwhelming)
