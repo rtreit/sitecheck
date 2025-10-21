@@ -7,7 +7,7 @@ A forensics tool for checking whether sites deployed in Azure are properly secur
 SiteCheck is a security audit tool that:
 - Takes a list of URLs from a file (`data/urls.txt`)
 - Asynchronously uses Playwright to browse to each site
-- Uses AI (Claude) to analyze what each site does
+- Uses Azure OpenAI (GPT-5 deployment) to analyze what each site does
 - Checks whether sites are accessible from outside
 - Identifies whether sites expose potentially sensitive information
 - Generates a comprehensive security report
@@ -53,12 +53,17 @@ https://internal-portal.company.com
 https://api.company.com
 ```
 
-3. Set your Anthropic API key:
-```bash
-export ANTHROPIC_API_KEY='your-api-key-here'
+3. Provide Azure OpenAI credentials by creating a `.env` file in the project root:
+
+```
+AZURE_OPENAI_ENDPOINT=https://<resource-name>.openai.azure.com
+AZURE_OPENAI_DEPLOYMENT=<gpt-5-deployment-name>
+AZURE_OPENAI_KEY=<your-azure-openai-key>
+# Optional override if your deployment uses a different API version
+# AZURE_OPENAI_API_VERSION=2024-12-01-preview
 ```
 
-You can get an API key from [Anthropic](https://console.anthropic.com/).
+The project loads environment variables with [`python-dotenv`](https://pypi.org/project/python-dotenv/), so placing the values in `.env` is usually the easiest approach. You can also set them directly in the shell if you prefer.
 
 ## Usage
 
@@ -70,7 +75,7 @@ uv run sitecheck
 The tool will:
 1. Read URLs from `data/urls.txt`
 2. Visit each site using Playwright
-3. Analyze each site with AI for security issues
+3. Analyze each site with Azure OpenAI for security issues
 4. Generate a detailed report on the console
 5. Save full results to `data/results_TIMESTAMP.json`
 
@@ -135,19 +140,24 @@ See [EXAMPLE_OUTPUT.md](EXAMPLE_OUTPUT.md) for an example of what the security r
 The project includes basic tests:
 
 ```bash
-# Run basic import and structure tests
-uv run python test_basic.py
+# Install test tooling once if you plan to run pytest
+uv pip install pytest pytest-asyncio
 
-# Run functional tests (requires network access)
+# Run the full test suite
+uv run python -m pytest
+
+# Alternatively, execute the standalone functional script
 uv run python test_functional.py
 ```
+
+> **Note:** `test_functional.py` is an integration-style coroutine script that assumes network access and a Chromium browser. The pytest suite focuses on import and structural checks unless you adapt the functional tests to use proper pytest async markers.
 
 ## Security Notes
 
 - All dependencies are checked for known vulnerabilities
 - The tool uses secure HTTPS connections
 - No sensitive data (URLs, results, API keys) is sent to third parties except:
-  - Anthropic API for AI analysis of page content
+  - Azure OpenAI for AI analysis of page content
   - The target URLs being checked (via Playwright browser)
 - Results are stored locally in the `data/` directory
 - The `data/urls.txt` file is gitignored to prevent accidental commits
@@ -162,7 +172,7 @@ uv run python test_functional.py
 ## Requirements
 
 - Python 3.12+
-- Anthropic API key
+- Azure OpenAI resource (with GPT-4o/GPT-5 style chat deployment)
 - Internet access for the sites being checked
 
 ## License

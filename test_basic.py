@@ -14,8 +14,9 @@ def test_imports():
         import sitecheck
         from sitecheck.main import SiteChecker
         from playwright.async_api import async_playwright
-        import anthropic
         import aiofiles
+        from openai import AzureOpenAI
+        from dotenv import load_dotenv
         print("✓ All imports successful")
         return True
     except ImportError as e:

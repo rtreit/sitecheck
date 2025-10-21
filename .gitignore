@@ -210,3 +210,4 @@ __marimo__/
 data/urls.txt
 data/*.json
 data/*.html
+data/*

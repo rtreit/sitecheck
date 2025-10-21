@@ -20,11 +20,14 @@ uv run playwright install chromium
 ## 2. Configuration
 
 ```bash
-# Get your Anthropic API key from:
-# https://console.anthropic.com/
-
-# Set the API key
-export ANTHROPIC_API_KEY='your-api-key-here'
+# Provide Azure OpenAI credentials (recommended via .env)
+cat <<'EOF' > .env
+AZURE_OPENAI_ENDPOINT=https://<resource-name>.openai.azure.com
+AZURE_OPENAI_DEPLOYMENT=<gpt-5-deployment-name>
+AZURE_OPENAI_KEY=<your-azure-openai-key>
+# Optional: override API version if needed
+# AZURE_OPENAI_API_VERSION=2024-12-01-preview
+EOF
 
 # Create your URLs file
 cp data/urls.txt.example data/urls.txt
@@ -102,9 +105,10 @@ Common fixes:
 
 ## Troubleshooting
 
-**"ANTHROPIC_API_KEY not set"**
+**"Azure OpenAI endpoint/deployment/key required"**
 ```bash
-export ANTHROPIC_API_KEY='your-key-here'
+cat .env
+# Ensure AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_DEPLOYMENT, and AZURE_OPENAI_KEY are populated
 ```
 
 **"URLs file not found"**

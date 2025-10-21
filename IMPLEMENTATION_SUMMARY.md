@@ -7,7 +7,7 @@ A complete uv-based Python forensics tool for auditing Azure site deployments. T
 ### Core Features
 - **Asynchronous URL Processing**: Uses asyncio to efficiently check multiple sites concurrently
 - **Playwright Integration**: Automated browser testing to access sites as a real user would
-- **AI-Powered Analysis**: Uses Claude (Anthropic) to intelligently analyze site content for:
+- **AI-Powered Analysis**: Uses Azure OpenAI (GPT-5 deployment) to intelligently analyze site content for:
   - Site purpose and functionality
   - Authentication and access control status
   - Sensitive information exposure (credentials, API keys, internal data, etc.)
@@ -28,7 +28,7 @@ A complete uv-based Python forensics tool for auditing Azure site deployments. T
    - Captures page title, content, and HTTP status
 
 3. **AI Security Analysis**
-   - Sends page content to Claude for analysis
+   - Sends page content to Azure OpenAI for analysis
    - Identifies sensitive information exposure
    - Assesses security posture
    - Provides actionable recommendations
@@ -58,7 +58,8 @@ sitecheck/
 
 ### Dependencies
 - **playwright** (1.55.0): Browser automation
-- **anthropic** (0.71.0): AI analysis via Claude
+- **openai** (1.44.0+): Azure OpenAI SDK client (`AzureOpenAI`)
+- **python-dotenv** (1.0.1+): Load environment variables from `.env`
 - **aiofiles** (25.1.0): Async file I/O
 
 All dependencies checked for vulnerabilities ✓
@@ -89,9 +90,14 @@ uv run sitecheck
    uv run playwright install chromium
    ```
 
-2. Set API key:
+2. Supply Azure OpenAI credentials:
    ```bash
-   export ANTHROPIC_API_KEY='your-key'
+   cat <<'EOF' > .env
+   AZURE_OPENAI_ENDPOINT=https://<resource-name>.openai.azure.com
+   AZURE_OPENAI_DEPLOYMENT=<gpt-5-deployment-name>
+   AZURE_OPENAI_KEY=<your-azure-openai-key>
+   # Optional: AZURE_OPENAI_API_VERSION=2024-12-01-preview
+   EOF
    ```
 
 3. Create URL list:
@@ -122,12 +128,12 @@ uv run sitecheck
 
 ## Limitations
 - Requires internet access to check external sites
-- Requires Anthropic API key (paid service)
+- Requires Azure OpenAI resource (with appropriate deployment and quota)
 - May not work with sites requiring complex authentication
-- Rate limiting applies for large URL lists
+- Rate limiting applies for large URL lists and Azure OpenAI usage
 
 ## Next Steps for Users
-1. Get an Anthropic API key from https://console.anthropic.com/
+1. Provision an Azure OpenAI resource and deployment
 2. Add target Azure URLs to `data/urls.txt`
 3. Run the tool and review the security report
 4. Address any CRITICAL or HIGH risk findings immediately
